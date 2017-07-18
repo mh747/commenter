@@ -1,0 +1,19 @@
+{
+  "name": "commenter",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "db-migrate": "^0.10.0-beta.21",
+    "db-migrate-mysql": "^1.1.10",
+    "debug": "~2.6.3",
+    "express": "~4.15.2",
+    "jade": "~1.11.0",
+    "morgan": "~1.8.1",
+    "mysql": "^2.13.0"
+  }
+}
