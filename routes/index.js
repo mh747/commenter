@@ -5,31 +5,31 @@ var Comment = require('../models/Comment');
 /* GET home page. */
 router.get('/comments/:id?', function (req, res, next) {
   if (req.params.id) {
-    Comment.getCommentById(req.params.id, function (err, row) {
+    Comment.getCommentById(req.params.id, function (err, response) {
       if (err) {
-       return res.json(err);
+        return res.status(response.status).json(err);
       }
 
-      return res.json(row);
+      return res.status(response.status).json(response.results);
     });
   } else {
-    Comment.getAllComments(function (err, rows) {
+    Comment.getAllComments(function (err, response) {
       if (err) {
-        return res.json(err);
+        return res.status(response.status).json(err);
       }
 
-      return res.json(rows);
+      return res.status(response.status).json(response.results);
     })
   }
 });
 
 router.post('/comments', function (req, res, next) {
-  Comment.addComment(req.body, function (err, row) {
+  Comment.addComment(req.body, function (err, response) {
     if (err) {
-      return res.json(err);
+      return res.status(response.status).json(err);
     }
 
-    return res.json(row);
+    return res.status(response.status).json(response.results);
   })
 });
 

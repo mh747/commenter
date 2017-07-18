@@ -3,26 +3,43 @@ var client = require('../redisconnect.js');
 
 var Comment = {
   getAllComments: function (callback) {
-    return db.query("SELECT * FROM comments", callback);
+    var response = {};
+
+    db.query("SELECT * FROM comments", function (err, rows) {
+      if (err) {
+        response.status = 500;
+        return callback(err, response);
+      }
+
+      response.status = 200;
+      response.results = rows;
+      return callback(null, response);
+    });
   },
 
   getCommentById: function (id, callback) {
+    var response = {};
+
     // check for cache first
-    client.hgetall('comments:' + id, function (err, result) {
+    client.hgetall('comments:' + id, function (err, results) {
       if (err) {
-        return callback(err, null);
+        response.status = 500;
+        return callback(err, response);
       }
 
-      if (result) {
+      if (results) {
         console.log("Cache Hit");
-        return callback(null, result);
+        response.status = 200;
+        response.results = results;
+        return callback(null, response);
       }
 
       // not found
       console.log("Cache Miss");
-      db.query("SELECT * FROM comments WHERE id=?", [id], function (err, row) {
+      db.query("SELECT * FROM comments WHERE id=?", [id], function (err, rows) {
         if (err) {
-          return callback(err, null);
+          response.status = 500;
+          return callback(err, response);
         }
 
         client.hmset('comments:' + id, row[0], function (err, result) {
@@ -33,23 +50,29 @@ var Comment = {
           }
         });
 
-        return callback(null, row);
+        response.status = 200;
+        response.response = rows;
+        return callback(null, response);
       });
     });
   },
 
   addComment: function(Comment, callback) {
+    var response = {};
+
     db.query("INSERT INTO comments (comment) VALUES (?)", [Comment.comment], function (err, result) {
       if (err) {
-        return callback(err, null);
+        response.status = 500;
+        return callback(err, response);
       }
 
-      db.query("SELECT * FROM comments WHERE id=?", [result.insertId], function (err, row) {
+      db.query("SELECT * FROM comments WHERE id=?", [result.insertId], function (err, rows) {
         if (err) {
-          return callback(err, null);
+          response.status = 500;
+          return callback(err, response);
         }
 
-        var comment = row[0];
+        var comment = rows[0];
         client.hmset('comments:' + comment.id, comment, function (err, result) {
           if (err) {
             console.log("Error Adding To Cache Layer: " + err);
@@ -58,7 +81,9 @@ var Comment = {
           }
         });
 
-        return callback(null, row);
+        response.status = 201;
+        response.results = rows;
+        return callback(null, response);
       });
     });
   }
