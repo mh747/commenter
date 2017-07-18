@@ -11,7 +11,7 @@ var Comment = {
         return callback(err, response);
       }
 
-      response.status = 200;
+      response.status = (rows.length === 0) ? 404 : 200;
       response.results = rows;
       return callback(null, response);
     });
@@ -42,16 +42,20 @@ var Comment = {
           return callback(err, response);
         }
 
-        client.hmset('comments:' + id, row[0], function (err, result) {
-          if (err) {
-            console.log('Error Adding To Cache Layer: ' + err);
-          } else {
-            console.log('Added Comment ' + id + ' To Cache Layer');
-          }
-        });
+        var numResults = rows.length;
 
-        response.status = 200;
-        response.response = rows;
+        if (numResults > 0) {
+          client.hmset('comments:' + id, rows[0], function (err, result) {
+            if (err) {
+              console.log('Error Adding To Cache Layer: ' + err);
+            } else {
+              console.log('Added Comment ' + id + ' To Cache Layer');
+            }
+          });
+        }
+
+        response.status = (numResults === 0) ? 404 : 200;
+        response.results = rows;
         return callback(null, response);
       });
     });
