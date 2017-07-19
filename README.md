@@ -1,7 +1,7 @@
 # Commenter
 Vice Test - Simple Commenting API in Node.js
 
-This REST API is built with the Express framework. I don't like directly modifying database tables and structure, so I used the db-migrate package to implement any database setup or changes.
+This REST API is built with the Express framework. I wanted to be able to use version control to track changes to database table structure, so I used the db-migrate package to implement any database setup or changes. (This also makes it a little easier to set up on a local dev environment)
 
 ### Cloning This Repository
 To download this code and run the API locally, these steps can be followed:
