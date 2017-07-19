@@ -61,7 +61,7 @@ var Comment = {
     });
   },
 
-  addComment: function(Comment, callback) {
+  addComment: function (Comment, callback) {
     var response = {};
 
     db.query("INSERT INTO comments (comment) VALUES (?)", [Comment.comment], function (err, result) {
@@ -89,6 +89,31 @@ var Comment = {
         response.results = rows;
         return callback(null, response);
       });
+    });
+  },
+
+  deleteCommentById: function(id, callback) {
+    var response = {};
+
+    db.query("DELETE FROM comments WHERE id=?", [id], function (err, result) {
+      if (err) {
+        response.status = 500;
+        return callback(err, response);
+      }
+
+      // deleted successfully
+      client.del('comments:' + id, function (err, result) {
+        if (err) {
+          console.log("Error While Deleting From Cache Layer: " + err);
+        }
+
+        console.log("Comment " + id + " Deleted From Cache Layer");
+      });
+
+      response.status = 200;
+      response.results = "Removed Successfully";
+
+      return callback(null, response);
     });
   }
 }

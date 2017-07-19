@@ -33,4 +33,14 @@ router.post('/comments', function (req, res, next) {
   })
 });
 
+router.delete('/comments/:id', function (req, res, next) {
+  Comment.deleteCommentById(req.params.id, function (err, response) {
+    if (err) {
+      return res.status(response.status).json(err);
+    }
+
+    return res.status(response.status).json(response.results);
+  });
+});
+
 module.exports = router;
