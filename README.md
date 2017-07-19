@@ -21,7 +21,7 @@ To download this code and run the API locally, these steps can be followed:
     > quit;
   ```  
 4. This code will depend on a few different environment variables being set, so they should be defined now:  
-  a. PORT - will specify which port the API should run on  
+  a. PORT - will specify which port the API should run on (Default is 3000)  
   b. DBHOST - the host where the mysql database is located  
   c. DBUSER - the Mysql username  
   d. DBPASSWORD - the Mysql password  
