@@ -51,5 +51,8 @@ To list all comments, you can send a ` GET ` request to ` /comments `. The respo
 #### Selecting a Specific Comment
 To get a single comment, you can send a ` GET ` request to ` /comments/{id} `. The response will be the json representation of the comment requested.
 
+#### Deleting a Specific Comment
+To delete a single comment, you can send a ` DELETE ` request to ` /comments/{id} `. The response will return an error if there's an error, and a message confirming deletion if not. This will also delete the record from the cache layer if applicable.
+
 ### Note On Redis Cache Layer
 This app uses Redis to cache results. When instantiating the Redis client connection, this server will set the ` maxmemory-policy ` config setting in Redis to 'allkeys-lru'. I went with this method because when dealing with comments, it stands to reason that comments that were accessed recently will likely be accessed again, until there are newer comments that have taken over. This API does not cache based on the API URI being accessed, it caches based on the id of the comment. At this time, it also only caches the record when a single comment is looked up, or if a single comment is created. 
